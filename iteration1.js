@@ -16,10 +16,14 @@ function goToNextPlace() {
     updateCurrentPlaceContent();
   } else if (currentPlaceContent !== " G ") {
     goBack();
+    if (currentPlaceContent === " S ") {
+        return console.log("Aucune sortie n'a été trouvée.")
+    }
   } else {
     finished = true;
   }
   steps++;
+
 
   consoleAnimation();
 
