@@ -17,7 +17,7 @@ function goToNextPlace() {
   } else if (currentPlaceContent !== " G ") {
     goBack();
     if (currentPlaceContent === " S ") {
-        return console.log("Aucune sortie n'a été trouvée.")
+        throw new Error ("Aucune sortie n'a été trouvée.");
     }
   } else {
     finished = true;
@@ -129,4 +129,8 @@ function retrace() {
     console.log(`This path without dead end is ${path} steps long.`)
 }
 
-goToNextPlace();
+try {
+    goToNextPlace();
+} catch (e) {
+    console.error(e);
+}
