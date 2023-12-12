@@ -2,7 +2,7 @@ import * as fs from "node:fs";
 import readline from "node:readline/promises";
 
 export async function processInput() {
-  const fileStream = fs.createReadStream("./input2");
+  const fileStream = fs.createReadStream("./input");
 
   const rl = readline.createInterface({
     input: fileStream,

@@ -9,14 +9,7 @@ let previousPlaceCoordinates = [];
 let steps = 0;
 let currentPlaceContent = " S ";
 
-
-const myInterval = setInterval(findNextPlace, 500);
-function stopInterval() {
-    clearInterval(myInterval);
-} 
-
-function findNextPlace() {
-    
+function goToNextPlace() {
   walk();
   checkCurrentCaseContent();
   if (isNewCase()) {
@@ -24,12 +17,30 @@ function findNextPlace() {
   } else if (currentPlaceContent !== " G ") {
     goBack();
   } else {
-    stopInterval();
+    finished = true;
   }
   steps++;
 
+  consoleAnimation();
+
+  if (!finished) {
+    setTimeout(goToNextPlace, 300);
+  } else {
+    console.log(
+      `You found your goal at x:${currentPlaceCoordinates[0]}, y:${currentPlaceCoordinates[1]} in ${steps} steps.`
+    );
+    retrace();
+  }
+}
+
+function consoleAnimation() {
   console.clear();
-  laby.forEach((element) => console.log(element.join(" ")));
+
+  let cloneLaby = JSON.parse(JSON.stringify(laby));
+  cloneLaby[currentPlaceCoordinates[1]][currentPlaceCoordinates[0]] = "=0=";
+
+  cloneLaby.forEach((element) => console.log(element.join(" ")));
+  console.log(`current steps : ${steps}`)
 }
 
 function walk() {
@@ -103,7 +114,15 @@ function updateCurrentPlaceContent() {
     previousPlaceCoordinates;
 }
 
-laby.forEach((element) => console.log(element.join(" ")));
-console.log(
-  `You found your goal at x:${currentPlaceCoordinates[0]}, y:${currentPlaceCoordinates[1]} in ${steps} steps.`
-);
+function retrace() {
+    let path = 1;
+    currentPlaceContent = laby[previousPlaceCoordinates[1]][previousPlaceCoordinates[0]];
+    while (currentPlaceContent != " S ") {
+        currentPlaceCoordinates = currentPlaceContent;
+        currentPlaceContent = laby[currentPlaceCoordinates[1]][currentPlaceCoordinates[0]];
+        path++;
+    }
+    console.log(`This path without dead end is ${path} steps long.`)
+}
+
+goToNextPlace();
