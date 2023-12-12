@@ -2,7 +2,7 @@ import * as fs from "node:fs";
 import readline from "node:readline/promises";
 
 export async function processInput() {
-  const fileStream = fs.createReadStream("./input");
+  const fileStream = fs.createReadStream("./input2");
 
   const rl = readline.createInterface({
     input: fileStream,
@@ -13,6 +13,7 @@ export async function processInput() {
 
   for await (const line of rl) {
     let row = line.split("");
+    row = row.map(i => ' '+i+' ')
     laby.push(row);
   }
 

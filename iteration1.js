@@ -2,24 +2,34 @@ import { processInput } from "./processInput.js";
 
 let laby = await processInput();
 
-let start = find("S");
-let goal = find("G");
+let start = find(" S ");
+let finished = false;
 let currentPlaceCoordinates = start;
 let previousPlaceCoordinates = [];
 let steps = 0;
-let currentPlaceContent = "S";
+let currentPlaceContent = " S ";
 
-while (currentPlaceCoordinates !== goal) {
+
+const myInterval = setInterval(findNextPlace, 500);
+function stopInterval() {
+    clearInterval(myInterval);
+} 
+
+function findNextPlace() {
+    
   walk();
   checkCurrentCaseContent();
   if (isNewCase()) {
     updateCurrentPlaceContent();
-  } else if (currentPlaceContent !== "G") {
+  } else if (currentPlaceContent !== " G ") {
     goBack();
   } else {
-    finished();
+    stopInterval();
   }
   steps++;
+
+  console.clear();
+  laby.forEach((element) => console.log(element.join(" ")));
 }
 
 function walk() {
@@ -36,7 +46,7 @@ function walk() {
 
   let directions = [north, east, south, west];
   let directionsExist = [northExist, eastExist, southExist, westExist];
-  
+
   previousPlaceCoordinates = currentPlaceCoordinates;
 
   let walked = false;
@@ -45,8 +55,8 @@ function walk() {
   while (i < directions.length && !walked) {
     if (
       directionsExist[i] &&
-      (laby[directions[i][1]][directions[i][0]] === "." ||
-        laby[directions[i][1]][directions[i][0]] === "G")
+      (laby[directions[i][1]][directions[i][0]] === " . " ||
+        laby[directions[i][1]][directions[i][0]] === " G ")
     ) {
       currentPlaceCoordinates = directions[i];
       walked = true;
@@ -76,15 +86,11 @@ function find(place) {
 }
 
 function isNewCase() {
-  return currentPlaceContent === ".";
+  return currentPlaceContent === " . ";
 }
 
 function goBack() {
   currentPlaceCoordinates = currentPlaceContent;
-}
-
-function finished() {
-  currentPlaceCoordinates = goal;
 }
 
 function checkCurrentCaseContent() {
@@ -98,4 +104,6 @@ function updateCurrentPlaceContent() {
 }
 
 laby.forEach((element) => console.log(element.join(" ")));
-console.log(`You found your goal in ${steps} steps.`);
+console.log(
+  `You found your goal at x:${currentPlaceCoordinates[0]}, y:${currentPlaceCoordinates[1]} in ${steps} steps.`
+);
