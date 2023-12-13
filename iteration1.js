@@ -9,7 +9,21 @@ let previousPlaceCoordinates = [];
 let steps = 0;
 let currentPlaceContent = " S ";
 
-function goToNextPlace() {
+
+
+async function findGoal() {
+  while (!finished) {
+    findNextPlace();
+    consoleAnimation();
+    await later(300);
+  }
+  console.log(
+    `You found your goal at x:${currentPlaceCoordinates[0]}, y:${currentPlaceCoordinates[1]} in ${steps} steps.`
+  );
+  retrace();
+}
+
+function findNextPlace() {
   walk();
   checkCurrentCaseContent();
   if (isNewCase()) {
@@ -17,24 +31,12 @@ function goToNextPlace() {
   } else if (currentPlaceContent !== " G ") {
     goBack();
     if (currentPlaceContent === " S ") {
-        throw new Error ("Aucune sortie n'a été trouvée.");
+      throw new Error("Aucune sortie n'a été trouvée.");
     }
   } else {
     finished = true;
   }
   steps++;
-
-
-  consoleAnimation();
-
-  if (!finished) {
-    setTimeout(goToNextPlace, 300);
-  } else {
-    console.log(
-      `You found your goal at x:${currentPlaceCoordinates[0]}, y:${currentPlaceCoordinates[1]} in ${steps} steps.`
-    );
-    retrace();
-  }
 }
 
 function consoleAnimation() {
@@ -44,7 +46,7 @@ function consoleAnimation() {
   cloneLaby[currentPlaceCoordinates[1]][currentPlaceCoordinates[0]] = "=0=";
 
   cloneLaby.forEach((element) => console.log(element.join(" ")));
-  console.log(`current steps : ${steps}`)
+  console.log(`current steps : ${steps}`);
 }
 
 function walk() {
@@ -119,18 +121,26 @@ function updateCurrentPlaceContent() {
 }
 
 function retrace() {
-    let path = 1;
-    currentPlaceContent = laby[previousPlaceCoordinates[1]][previousPlaceCoordinates[0]];
-    while (currentPlaceContent != " S ") {
-        currentPlaceCoordinates = currentPlaceContent;
-        currentPlaceContent = laby[currentPlaceCoordinates[1]][currentPlaceCoordinates[0]];
-        path++;
-    }
-    console.log(`This path without dead end is ${path} steps long.`)
+  let path = 1;
+  currentPlaceContent =
+    laby[previousPlaceCoordinates[1]][previousPlaceCoordinates[0]];
+  while (currentPlaceContent != " S ") {
+    currentPlaceCoordinates = currentPlaceContent;
+    currentPlaceContent =
+      laby[currentPlaceCoordinates[1]][currentPlaceCoordinates[0]];
+    path++;
+  }
+  console.log(`This path without dead end is ${path} steps long.`);
+}
+
+function later(delay) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, delay);
+  });
 }
 
 try {
-    goToNextPlace();
+  findGoal();
 } catch (e) {
-    console.error(e);
+  console.error(e);
 }
