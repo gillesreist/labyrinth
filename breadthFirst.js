@@ -8,13 +8,17 @@ let start;
 let finished = false;
 let historyCurrentPlace = 0;
 let shortestPath = [];
+let blocked = false;
 
 async function expand() {
-  while (!finished) {
+  while (!finished && !blocked) {
     await later(300);
     nextStep();
     consoleAnimation();
     historyCurrentPlace++;
+    if (coordinatesHistory.length-1 < historyCurrentPlace) {
+      blocked = true;
+    }
   }
 }
 
@@ -114,7 +118,7 @@ function nextStep() {
 
 function consoleAnimation() {
   console.clear();
-  console.log('THE MAZE');
+  console.log("THE MAZE");
   let cloneLaby = JSON.parse(JSON.stringify(laby));
   cloneLaby.forEach((element) => {
     element.forEach((content, i) => {
@@ -132,7 +136,7 @@ async function walkThroughPath() {
   let i = 0;
   while (i < shortestPath.length) {
     await later(300);
-    laby[shortestPath[i][1]][shortestPath[i][0]] = '=0='
+    laby[shortestPath[i][1]][shortestPath[i][0]] = " 😀";
     consoleAnimation();
     i++;
   }
@@ -143,10 +147,14 @@ async function findShortestPath() {
   laby[start[1]][start[0]] = 0;
   coordinatesHistory.push(start);
   await expand();
-  retrace();
-  await walkThroughPath();
-  console.log(`The shortest path is ${shortestPath.length - 1} steps long :`);
-  console.log(JSON.parse(JSON.stringify(Object.assign({}, shortestPath))));
+  if (finished) {
+    retrace();
+    await walkThroughPath();
+    console.log(`The shortest path is ${shortestPath.length - 1} steps long :`);
+    console.log(JSON.parse(JSON.stringify(Object.assign({}, shortestPath))));
+  } else {
+    console.log("Couldn't find the goal !")
+  }
 }
 
 findShortestPath();
