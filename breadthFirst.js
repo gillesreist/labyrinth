@@ -6,9 +6,9 @@ let coordinatesHistory = [];
 
 let start;
 let finished = false;
+let blocked = false;
 let historyCurrentPlace = 0;
 let shortestPath = [];
-let blocked = false;
 
 async function expand() {
   while (!finished && !blocked) {
