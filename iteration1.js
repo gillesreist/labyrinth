@@ -1,6 +1,8 @@
 import { processInput } from "./processInput.js";
+import { createPath} from './generate.js';
 
-let laby = await processInput();
+let laby = createPath();
+//let laby = await processInput();
 
 let start = find(" S ");
 let finished = false;
@@ -15,7 +17,7 @@ async function findGoal() {
   while (!finished) {
     findNextPlace();
     consoleAnimation();
-    await later(300);
+    await later(100);
   }
   console.log(
     `You found your goal at x:${currentPlaceCoordinates[0]}, y:${currentPlaceCoordinates[1]} in ${steps} steps.`

@@ -16,6 +16,8 @@ const goal = [
  maze[start[1]][start[0]] = ' S ';
  maze[goal[1]][goal[0]] = ' G ';
 
+ let goalFound = false;
+
  function consoleAnimation() {
     console.clear();
     let cloneMaze = JSON.parse(JSON.stringify(maze));
@@ -50,19 +52,21 @@ function existingAdjacents(coordinates) {
 
 function createPath() {
         dig(start);
-        consoleAnimation();
+        //consoleAnimation();
+        return maze;
 }
 
 
-function dig(currentPosition) {
+async function dig(currentPosition) {
     const directions = existingAdjacents(currentPosition);
 
     let diggableAdjacents;
 
     let diggable = true;
 
+    checkGoal(directions);
 
-    while (diggable) {
+    while (diggable && !goalFound) {
 
       diggable = false;
       diggableAdjacents = [];
@@ -74,7 +78,7 @@ function dig(currentPosition) {
           let nextToDug = false;
           let adjacents = existingAdjacents(direction);
           adjacents.forEach((furtherPlace) => {
-            if (furtherPlace[0] !== currentPosition[0] && furtherPlace[1] !== currentPosition[1] && maze[furtherPlace[1]][furtherPlace[0]] == ' . ') {
+            if ((furtherPlace[0] !== currentPosition[0] || furtherPlace[1] !== currentPosition[1]) && (maze[furtherPlace[1]][furtherPlace[0]] == ' . ' || maze[furtherPlace[1]][furtherPlace[0]] == ' S ')) {
               nextToDug = true;
             }
           })
@@ -89,8 +93,11 @@ function dig(currentPosition) {
         const randomDirection = Math.floor((Math.random() * (diggableAdjacents.length)));
         let nextPosition = diggableAdjacents[randomDirection];
         maze[nextPosition[1]][nextPosition[0]] = ' . ';
-        consoleAnimation();
-        dig(nextPosition);
+        //consoleAnimation();
+
+        //await later(100);
+
+        await dig(nextPosition);
       }
       
     }
@@ -98,4 +105,20 @@ function dig(currentPosition) {
 }
 
 
-createPath();
+function checkGoal (directions) {
+  directions.forEach ((direction) => {
+    if (maze[direction[1]][direction[0]] === ' G ') {
+      goalFound = true;
+    }
+  });
+}
+
+function later(delay) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, delay);
+  });
+}
+
+//createPath();
+
+export { createPath };

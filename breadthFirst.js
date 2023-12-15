@@ -1,6 +1,8 @@
 import { processInput } from "./processInput.js";
+import { createPath} from './generate.js';
 
-let laby = await processInput();
+let laby = createPath();
+//let laby = await processInput();
 
 let coordinatesHistory = [];
 
@@ -12,7 +14,7 @@ let shortestPath = [];
 
 async function expand() {
   while (!finished && !blocked) {
-    await later(300);
+    await later(100);
     nextStep();
     consoleAnimation();
     historyCurrentPlace++;
@@ -135,7 +137,7 @@ function consoleAnimation() {
 async function walkThroughPath() {
   let i = 0;
   while (i < shortestPath.length) {
-    await later(300);
+    await later(100);
     laby[shortestPath[i][1]][shortestPath[i][0]] = " 😀";
     consoleAnimation();
     i++;
